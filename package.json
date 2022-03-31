@@ -1,0 +1,21 @@
+{
+  "name": "rblx",
+  "version": "0.0.1",
+  "description": "A Roblox promised-based library for NodeJS",
+  "main": "dist/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc && npm pack --pack-destination=build"
+  },
+  "keywords": [
+    "roblox"
+  ],
+  "author": "RyloRiz",
+  "license": "ISC",
+  "files": [
+    "/dist"
+  ]
+}
