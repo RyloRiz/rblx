@@ -29,7 +29,8 @@ interface OctokitMiscellaneousParams {
 }
 
 const URIs = {
-	DataStore: "https://apis.roblox.com/datastores/v1"
+	DataStore: "https://apis.roblox.com/datastores/v1",
+	PlaceManagement: "https://apis.roblox.com/universes/v1/{universeId}/places/{placeId}/versions"
 }
 
 async function octokit(schema: string, params: any, misc: OctokitMiscellaneousParams = {
@@ -38,10 +39,9 @@ async function octokit(schema: string, params: any, misc: OctokitMiscellaneousPa
 }): Promise<AxiosResponse<any, any>> {
 	for (const [k, v] of Object.entries(params)) {
 		if (schema.includes(`{${k}}`)) {
-			schema.replaceAll(`{${k}}`, v as string);
+			schema = schema.replaceAll(`{${k}}`, v as string);
 		}
 	}
-	// console.log(schema);
 	// console.log(JSON.stringify(misc.body));
 	// console.log(JSON.stringify(misc.headers));
 	try {

@@ -1,6 +1,7 @@
 const dotenv = require('dotenv');
 dotenv.config();
 
+const path = require('path');
 const assert = require('assert');
 const crypto = require('crypto');
 
@@ -19,6 +20,16 @@ describe('Universes', () => {
 		let dstore = (await uni.getDatastores(1)).datastores[0];
 		console.log("Datastore Name:", dstore?.name);
 		assert(dstore?.uid === uni.id, "DataStore id not identical to Universe id or DataStore doesn't exist")
+	})
+
+	it('should publish', async () => {
+		let uniForPM = new Universe(3470458899);
+		uniForPM.authenticate(process.env.RBXTKN);
+
+		let p = path.join(__dirname, 'new.rbxl');
+		let versionId = await uniForPM.publish(9265551929, p, 'Published');
+		console.log('Version Id:', versionId);
+		assert(versionId !== null, "VersionId is null");
 	})
 
 })

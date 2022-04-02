@@ -1,6 +1,6 @@
 {
   "name": "rblx",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A Roblox promise-based library for NodeJS",
   "main": "dist/index.js",
   "directories": {

@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+
 import DataStore from './datastore'
 import * as Util from './util'
 
@@ -58,6 +60,34 @@ class Universe {
 				rt.datastores.push(ds);
 			});
 			return rt;
+		} else {
+			console.error(res.status, res.statusText);
+		}
+	}
+
+	async publish(placeId: number, pathToFile: string) {
+		// File verification
+		let exists = fs.existsSync(pathToFile);
+		if (!exists) {
+			console.error('File does not exist!');
+		}
+
+		let url = Util.URIs.PlaceManagement + Util.populateQuery({
+			versionType: 'Published'
+		});
+		let res = await Util.octokit(url, {
+			universeId: this.id,
+			placeId: placeId
+		}, {
+			method: 'POST',
+			headers: {
+				'x-api-key': this.#apikey,
+				'Content-Type': 'application/octet-stream'
+			},
+			body: fs.readFileSync(pathToFile)
+		});
+		if (res.status === 200) {
+			return res.data;
 		} else {
 			console.error(res.status, res.statusText);
 		}
