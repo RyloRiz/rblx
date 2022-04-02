@@ -41,22 +41,26 @@ async function octokit(schema: string, params: any, misc: OctokitMiscellaneousPa
 			schema.replaceAll(`{${k}}`, v as string);
 		}
 	}
-	console.log(schema);
+	// console.log(schema);
+	// console.log(JSON.stringify(misc.body));
+	// console.log(JSON.stringify(misc.headers));
 	try {
-		if (misc.method.match(/[(GET)(DELETE)]/)) {
-			return await axios({
+		let response: AxiosResponse<any, any>;
+		if (misc.method.match(/GET|DELETE/)) {
+			response = await axios({
 				url: schema,
 				method: misc.method,
 				headers: misc.headers,
 			});
 		} else {
-			return await axios({
+			response = await axios({
 				url: schema,
 				method: misc.method,
 				headers: misc.headers,
 				data: misc.body
 			});
 		}
+		return response;
 	} catch (e) {
 		throw e;
 	}

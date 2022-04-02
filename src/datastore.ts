@@ -83,30 +83,145 @@ class DataStore {
 
 	async set(key: string, value: any = null, exclusiveCreate?: boolean, matchVersion?: string) {
 		let jsonData = JSON.stringify(value);
-		let checksum = crypto.createHash('md5').update(value).digest('base64');
-		console.log(key, value);
-		console.log(JSON.stringify(value));
-		console.log(checksum);
+		let checksum = crypto.createHash('md5').update(jsonData).digest('base64');
+		// console.log(key, value);
+		// console.log(jsonData);
+		// console.log(checksum);
 		let url = Util.URIs.DataStore + `/${this.uid}/standard-datastores/datastore/entries/entry` + Util.populateQuery({
 			datastoreName: this.name,
-			scope: this.scope,
+			scope: this.scope === 'global' ? undefined : this.scope,
 			entryKey: key,
 			exclusiveCreate: exclusiveCreate,
 			matchVersion: !exclusiveCreate ? matchVersion : undefined
 		});
+		// const headers = {
+		// 	'x-api-key': this.#apikey,
+		// 	'content-type': 'application/json',
+		// 	'content-md5': checksum,
+		// 	'roblox-entry-userids': '[]',
+		// 	'roblox-entry-attributes': JSON.stringify({})
+		// }
+		// console.log(JSON.stringify(headers));
 		let res = await Util.octokit(url, {}, {
 			method: 'POST',
 			body: jsonData,
 			headers: {
 				'x-api-key': this.#apikey,
 				'content-type': 'application/json',
+				// 'Content-Type': 'application/json; charset=UTF-8',
 				'content-md5': checksum,
-				'roblox-entry-userids': [],
-				'roblox-entry-attributes': {}
+				// 'roblox-entry-userids': JSON.stringify([]),
+				// 'roblox-entry-attributes': JSON.stringify({})
 			}
 		});
 		if (res.status === 200) {
 			return res.data as Util.EntryVersion;
+		} else {
+			console.error(res.status, res.statusText);
+		}
+	}
+
+	async increment(key: string, incrementBy: number = 1) {
+		// let jsonData = JSON.stringify(value);
+		// let checksum = crypto.createHash('md5').update(jsonData).digest('base64');
+		let url = Util.URIs.DataStore + `/${this.uid}/standard-datastores/datastore/entries/entry/increment` + Util.populateQuery({
+			datastoreName: this.name,
+			scope: this.scope === 'global' ? undefined : this.scope,
+			entryKey: key,
+			incrementBy: incrementBy
+		});
+		let res = await Util.octokit(url, {}, {
+			method: 'POST',
+			body: {},
+			headers: {
+				'x-api-key': this.#apikey,
+				'content-type': 'application/json',
+				'content-length': '0',
+				// 'Content-Type': 'application/json; charset=UTF-8',
+				// 'content-md5': checksum,
+				// 'roblox-entry-userids': JSON.stringify([]),
+				// 'roblox-entry-attributes': JSON.stringify({})
+			}
+		});
+		if (res.status === 200) {
+			return res.data as Util.EntryVersion;
+		} else {
+			console.error(res.status, res.statusText);
+		}
+	}
+
+	async delete(key: string) {
+		let url = Util.URIs.DataStore + `/${this.uid}/standard-datastores/datastore/entries/entry` + Util.populateQuery({
+			datastoreName: this.name,
+			scope: this.scope === 'global' ? undefined : this.scope,
+			entryKey: key
+		});
+		let res = await Util.octokit(url, {}, {
+			method: 'DELETE',
+			headers: {
+				'x-api-key': this.#apikey
+			}
+		});
+		if (res.status === 204) {
+			return res.data;
+		} else {
+			console.error(res.status, res.statusText);
+		}
+	}
+
+	async listVersions(key: string, limit: number = 1, sortOrder: 'Ascending'|'Descending' = 'Ascending', cursor?: string, startTime?: string, endTime?: string) {
+		let url = Util.URIs.DataStore + `/${this.uid}/standard-datastores/datastore/entries/entry/versions` + Util.populateQuery({
+			datastoreName: this.name,
+			scope: this.scope === 'global' ? undefined : this.scope,
+			entryKey: key,
+			limit: limit,
+			sortOrder: sortOrder,
+			cursor: cursor,
+			startTime: startTime,
+			endTime: endTime
+		});
+		let res = await Util.octokit(url, {}, {
+			method: 'GET',
+			headers: {
+				'x-api-key': this.#apikey
+			}
+		});
+		if (res.status === 200) {
+			let rt: {
+				versions: Util.EntryVersion[];
+				previousPageCursor: string|null;
+				nextPageCursor: string | null;
+			} = {
+				versions: res.data.versions as Util.EntryVersion[],
+				previousPageCursor: res.data.previousPageCursor,
+				nextPageCursor: res.data.nextPageCursor
+			}
+			return rt;
+		} else {
+			console.error(res.status, res.statusText);
+		}
+	}
+
+	async getVersion(key: string, versionId: string) {
+		let url = Util.URIs.DataStore + `/${this.uid}/standard-datastores/datastore/entries/entry/versions/version` + Util.populateQuery({
+			datastoreName: this.name,
+			scope: this.scope === 'global' ? undefined : this.scope,
+			entryKey: key,
+			versionId: versionId
+		});
+		let res = await Util.octokit(url, {}, {
+			method: 'GET',
+			headers: {
+				'x-api-key': this.#apikey
+			}
+		});
+		if (res.status === 200) {
+			return res.data;
+		} else if (res.status === 204) {
+			return {
+				level: Util.ErrLevel.Warning,
+				message: `Key ${key} is marked as removed/deleted`
+			}
 		} else {
 			console.error(res.status, res.statusText);
 		}

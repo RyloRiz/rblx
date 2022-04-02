@@ -32,12 +32,17 @@ describe('DataStores', () => {
 		assert(keys.keys[0].scope, "Datastore should have keys")
 	})
 
+	it('should create values', async () => {
+		let dstore = (await uni.getDatastores(1)).datastores[0];
+		let entryVersion = await dstore.set('testing', 1, true);
+		console.log(`EntryVersion:`, JSON.stringify(entryVersion));
+		assert(entryVersion !== null, "EntryVersion does not exist");
+	})
+
 	it('should get values', async () => {
 		let dstore = await uni.getDatastores(1);
 		let val = await dstore.datastores[0].get(
-			// 'User 1673261094\'s Value'
-			// '1673261094'
-			'hello'
+			'testing'
 		);
 		console.log(`Value:`, val);
 		assert(val !== null, "Value doesn't exist");
@@ -45,16 +50,38 @@ describe('DataStores', () => {
 
 	it('should set values', async () => {
 		let dstore = (await uni.getDatastores(1)).datastores[0];
-		let entryVersion = await dstore.set(
-			// 'User 1673261094\'s Value'
-			'hello'
-			,
-			// Math.ceil(Math.random() * 100)
-			'newpassword'
-		); // Originally 100
+		let entryVersion = await dstore.set('testing', 750); // orig 750
 		console.log(`EntryVersion:`, JSON.stringify(entryVersion));
 		assert(entryVersion !== null, "EntryVersion does not exist");
 	})
+
+	it('should increment values', async () => {
+		let dstore = (await uni.getDatastores(1)).datastores[0];
+		let entryVersion = await dstore.increment('testing', 150);
+		console.log(`EntryVersion:`, JSON.stringify(entryVersion));
+		assert(entryVersion !== null, "EntryVersion does not exist");
+	})
+
+
+	it('should delete values', async () => {
+		let dstore = (await uni.getDatastores(1)).datastores[0];
+		dstore.delete('testing');
+	})
+
+	it('should list versions', async () => {
+		let dstore = (await uni.getDatastores(1)).datastores[0];
+		let ver = await dstore.listVersions('testing');
+		console.log("Version:", ver);
+		assert(ver !== null, "Version does not exist");
+	})
+
+	it('should get versions', async () => {
+		let dstore = (await uni.getDatastores(1)).datastores[0];
+		let verData = await dstore.getVersion('testing', '08DA148634E1EBC4.0000000001.08DA148634E1EBC4.01');
+		console.log("Version Data:", verData);
+		assert(verData !== null, "Version Data does not exist");
+	})
+
 })
 
 // let res = await axios.get('https://apis.roblox.com/datastores/v1/1873399482/standard-datastores?scope=global', {
