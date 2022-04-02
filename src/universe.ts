@@ -3,6 +3,34 @@ import * as fs from 'fs';
 import DataStore from './datastore'
 import * as Util from './util'
 
+async function modifyPlace(apikey: string, uid: number, pid: number, versionType: 'Saved'|'Published', pathToFile: string) {
+	// File verification
+	let exists = fs.existsSync(pathToFile);
+	if (!exists) {
+		console.error('File does not exist!');
+	}
+
+	let url = Util.URIs.PlaceManagement + Util.populateQuery({
+		versionType: versionType
+	});
+	let res = await Util.octokit(url, {
+		universeId: uid,
+		placeId: pid
+	}, {
+		method: 'POST',
+		headers: {
+			'x-api-key': apikey,
+			'Content-Type': 'application/octet-stream'
+		},
+		body: fs.readFileSync(pathToFile)
+	});
+	if (res.status === 200) {
+		return res.data;
+	} else {
+		console.error(res.status, res.statusText);
+	}
+}
+
 class Universe {
 	#apikey: string;
 	id: number;
@@ -65,32 +93,12 @@ class Universe {
 		}
 	}
 
-	async publish(placeId: number, pathToFile: string) {
-		// File verification
-		let exists = fs.existsSync(pathToFile);
-		if (!exists) {
-			console.error('File does not exist!');
-		}
+	async save(placeId: number, pathToFile: string) {
+		return await modifyPlace(this.#apikey, this.id, placeId, 'Saved', pathToFile);
+	}
 
-		let url = Util.URIs.PlaceManagement + Util.populateQuery({
-			versionType: 'Published'
-		});
-		let res = await Util.octokit(url, {
-			universeId: this.id,
-			placeId: placeId
-		}, {
-			method: 'POST',
-			headers: {
-				'x-api-key': this.#apikey,
-				'Content-Type': 'application/octet-stream'
-			},
-			body: fs.readFileSync(pathToFile)
-		});
-		if (res.status === 200) {
-			return res.data;
-		} else {
-			console.error(res.status, res.statusText);
-		}
+	async publish(placeId: number, pathToFile: string) {
+		return await modifyPlace(this.#apikey, this.id, placeId, 'Published', pathToFile);
 	}
 }
 
