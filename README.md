@@ -2,7 +2,7 @@
 
 The rblx library is meant for easy interactions with the Roblox Open Cloud API. Currently, this includes all of the Datastore API functions & Place Management APIs.
 
-This module is also taking its first steps in terms of development. I've been writing this module since yesterday in between writing a speech and haven't gotten around to adding place management functionality yet. Stay tuned for updates!
+This module is also taking its first steps in terms of development. I've been writing this module since yesterday in between writing a speech ~~and haven't gotten around to adding place management functionality yet~~. Stay tuned for updates!
 
 # Installation + Setup
 
