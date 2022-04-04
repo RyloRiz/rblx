@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 import DataStore from './datastore'
-import * as Util from './util'
+import * as Util from '../util'
 
 async function modifyPlace(apikey: string, uid: number, pid: number, versionType: 'Saved'|'Published', pathToFile: string) {
 	// File verification

@@ -8,6 +8,26 @@ enum ErrLevel {
 	Critical
 }
 
+enum Gender {
+	Male,
+	Female
+}
+
+enum PromotionChannelPrivacy {
+	NoOne,
+	Friends,
+	FriendsAndFollowing,
+	FriendsAndFollowingAndFollowers,
+	AllUsers
+}
+
+enum TradeStatus {
+	Completed,
+	Inactive,
+	Inbound,
+	Outbound
+}
+
 interface EntryKey {
 	scope: string;
 	key: string;
@@ -78,17 +98,20 @@ function populateQuery(list: any): string {
 
 export {
 	// Enums
-	ErrLevel as ErrLevel,
+	ErrLevel,
+	Gender,
+	PromotionChannelPrivacy,
+	TradeStatus,
 
 	// Functions
-	octokit as octokit,
-	populateQuery as populateQuery,
+	octokit,
+	populateQuery,
 
 	// Interfaces
-	EntryKey as EntryKey,
-	EntryVersion as EntryVersion,
-	OctokitMiscellaneousParams as OctokitMiscellaneousParams,
+	EntryKey,
+	EntryVersion ,
+	OctokitMiscellaneousParams,
 
 	// Classes/Misc
-	URIs as URIs
+	URIs
 };

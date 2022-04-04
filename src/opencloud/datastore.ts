@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import * as Util from './util'
+import * as Util from '../util'
 
 class DataStore {
 	#apikey: string;

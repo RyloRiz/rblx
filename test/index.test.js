@@ -5,10 +5,10 @@ const path = require('path');
 const assert = require('assert');
 const crypto = require('crypto');
 
-const { Universe } = require('../dist');
+const { OpenCloudUniverse } = require('../dist');
 // const axios = require('axios').default;
 
-let uni = new Universe(
+let uni = new OpenCloudUniverse(
 	2471977469
 	// 1873399482
 );

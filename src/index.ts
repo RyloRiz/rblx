@@ -1,5 +1,4 @@
-import DataStore from './datastore'
-import Universe from './universe'
+// Open Cloud
+export { OpenCloudDataStore, OpenCloudUniverse } from "./opencloud"
 
-export { DataStore };
-export { Universe };
+// Web APIs
