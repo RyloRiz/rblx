@@ -1,11 +1,11 @@
 // Enums
-export { ErrLevel, Gender, PromotionChannelPrivacy, TradeStatus } from './enum'
+export * from './enum'
 
 // Interfaces
-export { EntryKey, EntryVersion, OctokitMiscellaneousParams } from './interfaces'
+export * from './interfaces'
 
 // Functions
-export { octokit, populateQuery, err } from './functions'
+export * from './functions'
 
 // Classes/Misc
-export { Http } from './http'
+export * from './http'

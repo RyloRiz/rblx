@@ -1,3 +1,9 @@
+interface Birthdate {
+	birthMonth: number,
+	birthDay: number,
+	birthYear: number
+}
+
 interface EntryKey {
 	scope: string;
 	key: string;
@@ -18,8 +24,16 @@ interface OctokitMiscellaneousParams {
 	callback?: Function
 }
 
+interface TradeOffer {
+	userId: number,
+	userAssetIds: number[],
+	robux: number
+}
+
 export {
+	Birthdate,
 	EntryKey,
 	EntryVersion,
-	OctokitMiscellaneousParams
+	OctokitMiscellaneousParams,
+	TradeOffer
 }

@@ -1,4 +1,4 @@
-import { Http, err, PromotionChannelPrivacy } from '../util'
+import { Http, err, PromotionChannelPrivacy, Birthdate, Gender, TradeOffer, TradeStatus } from '../util'
 
 class Client {
 	http: Http;
@@ -6,7 +6,7 @@ class Client {
 		this.http = new Http();
 	}
 
-	async acceptRequest(userId) {
+	async acceptRequest(userId: number) {
 		if (!Number(userId)) { throw new Error("Invalid userId"); }
 		return await this.http.request('POST', `https://friends.roblox.com/v1/users/${userId}/accept-friend-request`, {})
 			.then((response) => { return response; })
@@ -14,7 +14,7 @@ class Client {
 			;
 	}
 
-	async acceptTrade(tradeId) {
+	async acceptTrade(tradeId: number) {
 		if (!Number(tradeId)) { throw new Error("Invalid tradeId"); }
 		return await this.http.request('POST', `https://trades.roblox.com/v1/trades/${tradeId}/accept`, {
 			tradeId: tradeId
@@ -24,7 +24,7 @@ class Client {
 			;
 	}
 
-	async addFriend(userId) {
+	async addFriend(userId: number) {
 		if (!Number(userId)) { throw new Error("Invalid userId"); }
 		return await this.http.request('POST', `https://friends.roblox.com/v1/users/${userId}/request-friendship`, {
 			friendshipRequestModel: {
@@ -36,7 +36,7 @@ class Client {
 			;
 	}
 
-	async block(userId) {
+	async block(userId: number) {
 		if (!Number(userId)) { throw new Error("Invalid userId"); }
 		return await this.http.request('POST', `https://accountsettings.roblox.com/v1/users/${userId}/block`, {})
 			.then((response) => { return response; })
@@ -44,14 +44,14 @@ class Client {
 			;
 	}
 
-	async canTradeWith(userId) {
+	async canTradeWith(userId: number) {
 		return await this.http.get(`https://trades.roblox.com/v1/users/${userId}/can-trade-with`)
 			.then((response) => { return response.canTrade; })
 			.catch((error) => err(error))
 			;
 	}
 
-	async claimOwnership(groupId) {
+	async claimOwnership(groupId: number) {
 		if (!Number(groupId)) { throw new Error("Invalid groupId"); }
 		return await this.http.request('POST', `https://groups.roblox.com/v1/groups/${groupId}/claim-ownership`, {})
 			.then((response) => { return response; })
@@ -59,7 +59,7 @@ class Client {
 			;
 	}
 
-	async counterTrade(tradeId, offers) {
+	async counterTrade(tradeId: number, offers: TradeOffer[]) {
 		return await this.http.request('POST', `https://trades.roblox.com/v1/trades/${tradeId}/counter`, {
 			offers: offers
 		})
@@ -75,7 +75,7 @@ class Client {
 			;
 	}
 
-	async declineRequest(userId) {
+	async declineRequest(userId: number) {
 		if (!Number(userId)) { throw new Error("Invalid userId"); }
 		return await this.http.request('POST', `https://friends.roblox.com/v1/users/${userId}/decline-friend-request`, {})
 			.then((response) => { return response; })
@@ -83,7 +83,7 @@ class Client {
 			;
 	}
 
-	async declineTrade(tradeId) {
+	async declineTrade(tradeId: number) {
 		if (!Number(tradeId)) { throw new Error("Invalid tradeId"); }
 		return await this.http.request('POST', `https://trades.roblox.com/v1/trades/${tradeId}/decline`, {
 			tradeId: tradeId
@@ -188,13 +188,6 @@ class Client {
 			;
 	}
 
-	// async getPromotionChannels() {
-	// 	return await this.http.get('https://accountinformation.roblox.com/v1/promotion-channels')
-	// 		.then((response) => { return { facebook: response.facebook, twitter: response.twitter, youtube: response.youtube, twitch: response.twitch, privacy: response.promotionChannelsVisibilityPrivacy }; })
-	// 		.catch((error) => err(error))
-	// 		;
-	// }
-
 	async getStatus() {
 		let userId = this.getUserId();
 		return await this.http.get(`https://users.roblox.com/v1/users/${userId}/status`)
@@ -203,34 +196,34 @@ class Client {
 			;
 	}
 
-	async getTrade(tradeId) {
+	async getTrade(tradeId: number) {
 		return await this.http.get(`https://trades.roblox.com/v1/trades/${tradeId}`)
 			.then((response) => { return response; })
 			.catch((error) => err(error))
 			;
 	}
 
-	async getTrades(tradeStatusType) {
-		let map = {
-			"0": "Completed",
-			"1": "Inactive",
-			"2": "Inbound",
-			"3": "Outbound"
-		};
-		return await this.http.get(`https://trades.roblox.com/v1/trades/${map[tradeStatusType.toString()] || "Inbound"}?sortOrder=Asc&limit=100`)
+	async getTrades(tradeStatusType: TradeStatus = TradeStatus.Inbound) {
+		// let map = {
+		// 	"0": "Completed",
+		// 	"1": "Inactive",
+		// 	"2": "Inbound",
+		// 	"3": "Outbound"
+		// };
+		return await this.http.get(`https://trades.roblox.com/v1/trades/${tradeStatusType}?sortOrder=Asc&limit=100`)
 			.then((response) => { return response.data; })
 			.catch((error) => err(error))
 			;
 	}
 
-	async getTradesCount(tradeStatusType) {
+	async getTradesCount(tradeStatusType: TradeStatus = TradeStatus.Inbound) {
 		let map = {
 			"0": "Completed",
 			"1": "Inactive",
 			"2": "Inbound",
 			"3": "Outbound"
 		};
-		return await this.http.get(`https://trades.roblox.com/v1/trades/${map[tradeStatusType.toString()] || "Inbound"}/count`)
+		return await this.http.get(`https://trades.roblox.com/v1/trades/${tradeStatusType}/count`)
 			.then((response) => { return response.count; })
 			.catch((error) => err(error))
 			;
@@ -250,7 +243,7 @@ class Client {
 			;
 	}
 
-	async isFollowing(userId) {
+	async isFollowing(userId: number) {
 		if (!Number(userId)) { throw new Error("Invalid userId"); }
 		return await this.http.request('POST', `https://friends.roblox.com/v1/user/following-exists`, {
 			targetUserIds: [userId]
@@ -268,7 +261,7 @@ class Client {
 			;
 	}
 
-	async removeFriend(userId) {
+	async removeFriend(userId: number) {
 		if (!Number(userId)) { throw new Error("Invalid userId"); }
 		return await this.http.request('POST', `https://friends.roblox.com/v1/users/${userId}/unfriend`, {})
 			.then((response) => { return response; })
@@ -283,7 +276,7 @@ class Client {
 			;
 	}
 
-	async sendTrade(offers) {
+	async sendTrade(offers: TradeOffer[]) {
 		return await this.http.request('POST', `https://trades.roblox.com/v1/trades/send`, {
 			offers: offers
 		})
@@ -292,7 +285,7 @@ class Client {
 			;
 	}
 
-	async setBirthdate(birthdate) {
+	async setBirthdate(birthdate: Birthdate) {
 		return await this.http.request('POST', `https://accountinformation.roblox.com/v1/birthdate`, {
 			birthMonth: birthdate.birthMonth,
 			birthDay: birthdate.birthDay,
@@ -303,7 +296,7 @@ class Client {
 			;
 	}
 
-	async setDescription(description) {
+	async setDescription(description: string) {
 		return await this.http.request('POST', 'https://accountinformation.roblox.com/v1/description', {
 			description: description
 		})
@@ -312,7 +305,7 @@ class Client {
 			;
 	}
 
-	async setDisplayName(displayName) {
+	async setDisplayName(displayName: string) {
 		let userId = this.getUserId();
 		return await this.http.get(`https://users.roblox.com/v1/users/${userId}/display-names/validate?displayName=${displayName}`)
 			.then(async () => {
@@ -327,20 +320,21 @@ class Client {
 			;
 	}
 
-	async setGender(genderId) {
+	async setGender(gender: Gender) {
+		// No non-binary, read hover/JSDoc for Gender type
 		let map = {
 			'0': 'male',
 			'1': 'female',
 		}
 		return await this.http.request('POST', 'https://accountinformation.roblox.com/v1/gender', {
-			gender: map[genderId.toString()]
+			gender: map[gender.toString()]
 		})
 			.then((response) => { return response; })
 			.catch((error) => err(error))
 			;
 	}
 
-	async setPrimaryGroup(groupId) {
+	async setPrimaryGroup(groupId: number) {
 		if (!Number(groupId)) { throw new Error("Invalid groupId"); }
 		return await this.http.request('POST', `https://groups.roblox.com/v1/user/groups/primary`, {
 			groupId: groupId
@@ -350,28 +344,21 @@ class Client {
 			;
 	}
 
-	async setPromotionChannels(tbl, privacy) {
-		let map = {
-			'0': 'NoOne',
-			'1': 'Friends',
-			'2': 'FriendsAndFollowers',
-			'3': 'FriendsFollowersAndFollowing',
-			'4': 'AllUsers'
-		}
+	async setPromotionChannels(tbl: { [key: string]: string }, privacy: PromotionChannelPrivacy) {
 		let socials = await this.getPromotionChannels();
 		return await this.http.request('POST', 'https://accountinformation.roblox.com/v1/promotion-channels', {
 			facebook: tbl['facebook'] || socials['facebook'] || "",
 			twitter: tbl['twitter'] || socials['twitter'] || "",
 			youtube: tbl['youtube'] || socials['youtube'] || "",
 			twitch: tbl['twitch'] || socials['twitch'] || "",
-			promotionChannelsVisibilityPrivacy: map[privacy.toString()] || map[PromotionChannelPrivacy[socials['privacy'].toUpperCase()] || "0"]
+			promotionChannelsVisibilityPrivacy: privacy.toString() || PromotionChannelPrivacy[socials['privacy'].toUpperCase() || "NoOne"]
 		})
 			.then((response) => { return response; })
 			.catch((error) => err(error))
 			;
 	}
 
-	async setStatus(status) {
+	async setStatus(status: string) {
 		let userId = this.getUserId();
 		return await this.http.request(`PATCH`, `https://users.roblox.com/v1/users/${userId}/status`, {
 			status: status
@@ -381,14 +368,14 @@ class Client {
 			;
 	}
 
-	async login(token) {
+	async login(token: string) {
 		return await this.http.setToken(token)
 			.then((response) => { return response; })
 			.catch((error) => err(error))
 			;
 	}
 
-	async unblock(userId) {
+	async unblock(userId: number) {
 		if (!Number(userId)) { throw new Error("Invalid userId"); }
 		return await this.http.request('POST', `https://accountsettings.roblox.com/v1/users/${userId}/unblock`, {})
 			.then((response) => { return response; })
@@ -396,3 +383,5 @@ class Client {
 			;
 	}
 }
+
+export default Client;
