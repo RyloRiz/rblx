@@ -1,6 +1,7 @@
 enum URIs {
-	DataStore = "https://apis.roblox.com/datastores/v1",
-	PlaceManagement = "https://apis.roblox.com/universes/v1/{universeId}/places/{placeId}/versions"
+	DataStore = "https://apis.roblox.com/datastores/v1/universes",
+	PlaceManagement = "https://apis.roblox.com/universes/v1/{universeId}/places/{placeId}/versions",
+	MessagingService = "https://apis.roblox.com/messaging-service/v1/universes/{universeId}/topics/{topic}"
 }
 
 enum ErrLevel {

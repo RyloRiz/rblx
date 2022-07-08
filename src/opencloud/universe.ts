@@ -100,6 +100,28 @@ class Universe {
 	async publish(placeId: number, pathToFile: string) {
 		return await modifyPlace(this.#apikey, this.id, placeId, 'Published', pathToFile);
 	}
+
+	async publishToTopic(topic: string, data: any) {
+		let url = Util.URIs.MessagingService;
+		let res = await Util.octokit(url, {
+			universeId: this.id,
+			topic: topic
+		}, {
+			method: 'POST',
+			headers: {
+				'x-api-key': this.#apikey,
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				message: JSON.stringify(data)
+			})
+		});
+		if (res.status === 200) {
+			return res.data;
+		} else {
+			console.error(res.status, res.statusText);
+		}
+	}
 }
 
 export default Universe;

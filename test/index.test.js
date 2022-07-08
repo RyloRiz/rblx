@@ -9,7 +9,7 @@ const { OpenCloudUniverse } = require('../dist');
 // const axios = require('axios').default;
 
 let uni = new OpenCloudUniverse(
-	2471977469
+	3638269484
 	// 1873399482
 );
 uni.authenticate(process.env.RBXTKN);
@@ -32,13 +32,22 @@ describe('Universes', () => {
 		assert(versionId !== null, "VersionId is null");
 	})
 
+	it('should send MessagingService', async () => {
+		let res = await uni.publishToTopic('newtopic1', { hello: "world" });
+		console.log(res);
+	});
+
 })
 
 describe('DataStores', () => {
 
 	it('should list keys', async () => {
-		let dstore = await uni.getDatastores(1);
-		let keys = await dstore.datastores[0].listKeys(5);
+		let dstores = await uni.getDatastores(2);
+		let dstore = dstores.datastores[1];
+		let keys = await dstore.listKeys({
+			limit: 3,
+			useV2Limit: true
+		});
 		console.log("Keys:", JSON.stringify(keys.keys));
 		assert(keys.keys[0].scope, "Datastore should have keys")
 	})

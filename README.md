@@ -1,6 +1,6 @@
 # About
 
-The rblx library is meant for easy interactions with the Roblox Open Cloud & Web APIs. Currently, this includes all of the Open Cloud Datastore API functions, Open Cloud Place Management API function, and almost all Web API functions.
+The rblx library is meant for easy interactions with the Roblox Open Cloud & Web APIs. Currently, this includes all of the Open Cloud Datastore API functions, Open Cloud Place Management API functions, Open Cloud MessagingService API functions, and almost all Web API functions.
 
 **As of the beginning of April 2022**:
 
@@ -39,6 +39,9 @@ Save the `rblx` file located at `pathToFile` to Roblox, therefore **not** publis
 
 ### `OpenCloudUniverse.publish(placeId: number, pathToFile: string)`
 Publish the `rblx` file located at `pathToFile` to Roblox, therefore **also** saving to Roblox.
+
+### `OpenCloudUniverse.publishToTopic(topic: string, data: any)`
+Publish some data to a MessagingService topic (this only works in Live Servers as of 7/8/22)
 </details>
 
 <details>
@@ -50,8 +53,20 @@ Creates a new OpenCloudDataStore class - THIS IS NOT MEANT TO BE CALLED MANUALLY
 ### `OpenCloudDataStore.authenticate(apikey: string)`
 Authenticate the OpenCloudDataStore with your API key
 
-### `OpenCloudDataStore.listKeys(limit?: number, allScopes?: boolean, prefix?: string, cursor?: string)`
-Return an object containing the previous page cursor, next page cursor, and keys on the current page
+### `OpenCloudDataStore.listKeys(limit?: number | LimitOptions, allScopes?: boolean, prefix?: string, cursor?: string)`
+IF LIMIT IS NUMBER: Return an object containing the previous page cursor, next page cursor, and keys on the current page
+
+IF LIMIT IS LIMITOPTIONS: Return an object with the number of keys specified
+
+`LimitOptions` is used if you want to receive the number of keys you made as the limit. The intended functionality of Roblox's limit parameter does not guarantee you will receive as many keys as you have requested, but using LimitOptions instead of a number value will do so.
+
+`LimitOptions` follows this schema:
+```js
+{
+	limit: number,
+	useV2Limit: boolean // true to get all keys specified
+}
+```
 
 ### `OpenCloudDataStore.get(key: string)`
 Get the value of a key

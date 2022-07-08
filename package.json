@@ -1,6 +1,6 @@
 {
   "name": "rblx",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A Roblox promise-based library for NodeJS with support for Open Cloud and the Web APIs",
   "main": "dist/index.js",
   "directories": {

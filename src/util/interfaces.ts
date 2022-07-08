@@ -17,6 +17,11 @@ interface EntryVersion {
 	objectCreatedTime: string
 }
 
+interface LimitOptions {
+	limit: number,
+	useV2Limit: boolean
+}
+
 interface OctokitMiscellaneousParams {
 	method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
 	headers: any,
@@ -34,6 +39,7 @@ export {
 	Birthdate,
 	EntryKey,
 	EntryVersion,
+	LimitOptions,
 	OctokitMiscellaneousParams,
 	TradeOffer
 }

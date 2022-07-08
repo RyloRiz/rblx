@@ -1,5 +1,6 @@
 import crypto from 'crypto'
 import * as Util from '../util'
+import { LimitOptions } from '../util';
 
 class DataStore {
 	#apikey: string;
@@ -24,36 +25,73 @@ class DataStore {
 		this.#apikey = apikey;
 	}
 
-	async listKeys(limit?: number, allScopes?: boolean, prefix?: string, cursor?: string) {
-		let url = Util.URIs.DataStore + `/${this.uid}/standard-datastores/datastore/entries` + Util.populateQuery({
-			datastoreName: this.name,
-			scope: this.scope,
-			limit: limit,
-			allScopes: allScopes,
-			prefix: prefix,
-			cursor: cursor
-		});
-		let res = await Util.octokit(url, {}, {
-			method: 'GET',
-			headers: {
-				'x-api-key': this.#apikey
+	async listKeys(limit?: number | LimitOptions, allScopes?: boolean, prefix?: string, cursor?: string) {
+		if (limit === undefined || typeof (limit) === 'number' || !limit.useV2Limit) {
+			let url = Util.URIs.DataStore + `/${this.uid}/standard-datastores/datastore/entries` + Util.populateQuery({
+				datastoreName: this.name,
+				scope: this.scope,
+				limit: typeof (limit) === 'number' || typeof (limit) == "undefined" ? limit : limit.limit,
+				allScopes: allScopes,
+				prefix: prefix,
+				cursor: cursor
+			});
+			let res = await Util.octokit(url, {}, {
+				method: 'GET',
+				headers: {
+					'x-api-key': this.#apikey
+				}
+			});
+			if (res.status === 200) {
+				let previousCursor = res.data.previousPageCursor;
+				let nextCursor = res.data.nextPageCursor;
+				let rt: {
+					keys: Util.EntryKey[],
+					previousPageCursor: string | null,
+					nextPageCursor: string | null
+				} = {
+					keys: res.data.keys as Util.EntryKey[],
+					previousPageCursor: previousCursor,
+					nextPageCursor: nextCursor
+				}
+				return rt;
+			} else {
+				console.error(res.status, res.statusText);
 			}
-		});
-		if (res.status === 200) {
-			let previousCursor = res.data.previousPageCursor;
-			let nextCursor = res.data.nextPageCursor;
-			let rt: {
-				keys: Util.EntryKey[],
-				previousPageCursor: string|null,
-				nextPageCursor: string|null
-			} = {
-				keys: res.data.keys as Util.EntryKey[],
-				previousPageCursor: previousCursor,
-				nextPageCursor: nextCursor
+		} else if (limit.useV2Limit && limit.limit > 0) {
+			let keys: Util.EntryKey[] = [];
+			let nextCursor: string;
+			while (keys.length < limit.limit) {
+				let url = Util.URIs.DataStore + `/${this.uid}/standard-datastores/datastore/entries` + Util.populateQuery({
+					datastoreName: this.name,
+					scope: this.scope,
+					limit: 100,
+					allScopes: allScopes,
+					prefix: prefix,
+					cursor: nextCursor
+				});
+				let res = await Util.octokit(url, {}, {
+					method: 'GET',
+					headers: {
+						'x-api-key': this.#apikey
+					}
+				});
+				if (res.status === 200 && res.data.keys) {
+					res.data.keys.forEach((key: Util.EntryKey) => {
+						keys.push(key);
+					})
+					if (!res.data.nextPageCursor) {
+						break;
+					}
+					nextCursor = res.data.nextPageCursor;
+				} else {
+					console.error(res.status, res.statusText);
+				}
 			}
-			return rt;
-		} else {
-			console.error(res.status, res.statusText);
+			return {
+				keys: keys
+			};
+		} else if (limit.limit <= 0) {
+			console.error("If you provide a limit, you must set it greater than 0!");
 		}
 	}
 
