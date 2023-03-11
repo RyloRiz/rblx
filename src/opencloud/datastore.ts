@@ -16,7 +16,7 @@ class DataStore {
 	 */
 	constructor(uid: number, name: string, scope: string = "global") {
 		this.uid = uid;
-		this.name = name;
+		this.name = encodeURIComponent(name);
 		this.scope = scope;
 	}
 
