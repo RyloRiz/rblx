@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from 'axios'
+import FormData from 'form-data'
 import { OctokitMiscellaneousParams } from './'
 
 async function octokit(schema: string, params: any, misc: OctokitMiscellaneousParams = {
@@ -21,12 +22,21 @@ async function octokit(schema: string, params: any, misc: OctokitMiscellaneousPa
 				headers: misc.headers,
 			});
 		} else {
-			response = await axios({
+			let arg = {
 				url: schema,
 				method: misc.method,
-				headers: misc.headers,
-				data: misc.body
-			});
+			}
+			if (misc.formData) {
+				arg['data'] = misc.formData;
+				arg['headers'] = misc.formData.getHeaders();
+				for (const [k,v] of Object.entries(misc.headers)) {
+					arg['headers'][k] = v;
+				}
+			} else {
+				arg['data'] = misc.body;
+				arg['headers'] = misc.headers;
+			}
+			response = await axios(arg);
 		}
 		return response;
 	} catch (e) {
@@ -37,6 +47,7 @@ async function octokit(schema: string, params: any, misc: OctokitMiscellaneousPa
 function populateQuery(list: any): string {
 	let query = '';
 	for (const [k, v] of Object.entries(list)) {
+		// console.log(k, v, typeof k, typeof v);
 		if (v !== null && v !== undefined) {
 			query += `${query.length === 0 ? '?' : '&'}${k.toString()}=${v.toString()}`;
 		}

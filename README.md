@@ -1,10 +1,6 @@
 # About
 
-The rblx library is meant for easy interactions with the Roblox Open Cloud & Web APIs. Currently, this includes all of the Open Cloud Datastore API functions, Open Cloud Place Management API functions, Open Cloud MessagingService API functions, and almost all Web API functions.
-
-**As of the beginning of April 2022**:
-
-This module is also taking its first steps in terms of development. I've been writing this module since yesterday in between writing a speech ~~and haven't gotten around to adding place management functionality yet~~. Stay tuned for updates!
+The rblx library is meant for easy interactions with the Roblox Open Cloud & Web APIs. Currently, this includes all of the Open Cloud Datastore API functions, Open Cloud OrderedDatastore API functions, Open Cloud Place Management API functions, Open Cloud MessagingService API functions, and almost all Web API functions.
 
 # Installation + Setup
 
@@ -33,6 +29,9 @@ Pass the API key through this function, or use the npm dotenv package and `proce
 
 ### `OpenCloudUniverse.getDatastores(limit?: number, prefix?: string, cursor?: string)`
 Return an object containing the previous page cursor, next page cursor, and datastore objects.
+
+### `OpenCloudUniverse.getOrderedDatastore(name: string, scope: string)`
+Return an OrderedDataStore.
 
 ### `OpenCloudUniverse.save(placeId: number, pathToFile: string)`
 Save the `rblx` file located at `pathToFile` to Roblox, therefore **not** publishing.
@@ -89,6 +88,35 @@ List all versions of a key (with versionIds for `get`ting)
 
 ### `OpenCloudDataStore.getVersion(key: string, versionId: string)`
 Get the value of `key` at version `versionId`
+</details>
+
+<details>
+<summary>OpenCloudOrderedDataStore {Class}</summary>
+
+### `new OpenCloudOrderedDataStore(uid: number, name: string, scope: string = "global")`
+Creates a new OpenCloudOrderedDataStore class - THIS IS NOT MEANT TO BE CALLED MANUALLY
+
+### `OpenCloudOrderedDataStore.authenticate(apikey: string)`
+Authenticate the OpenCloudOrderedDataStore with your API key
+
+### `OpenCloudOrderedDataStore.listEntries(maxPageSize: number, cursor: string, order: OrderType, filter: string)`
+List all entries in an OpenCloudOrderedDataStore
+
+### `OpenCloudOrderedDataStore.createEntry(id: string, value: number)`
+Create a new entry in an OpenCloudOrderedDataStore
+
+### `OpenCloudOrderedDataStore.getEntry(id: string)`
+Get an entry from an OpenCloudOrderedDataStore
+
+### `OpenCloudOrderedDataStore.deleteEntry(id: string)`
+Delete a new entry from an OpenCloudOrderedDataStore
+
+### `OpenCloudOrderedDataStore.updateEntry(id: string, value: number, allowMissing: boolean = true)`
+Update an entry in an OpenCloudOrderedDataStore
+
+### `OpenCloudOrderedDataStore.incrementEntry(id: string, amount: number)`
+Increment an entry in an OpenCloudOrderedDataStore by a certain amount
+
 </details>
 
 ### Web API

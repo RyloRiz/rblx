@@ -104,6 +104,52 @@ describe('DataStores', () => {
 
 })
 
+describe('OrderedDataStores', () => {
+
+	it('should list entries', async () => {
+		let odstore = await uni.getOrderedDatastore("Points");
+		let data = await odstore.listEntries(50);
+		console.log("Entries:", JSON.stringify(data));
+		assert(data.entries[0].path, "OrderedDatastore should have entries");
+	})
+
+	it('should create entries', async () => {
+		let odstore = await uni.getOrderedDatastore("Points");
+		let data = await odstore.createEntry("Johnny", 99);
+		console.log("Created Entry:", JSON.stringify(data));
+		assert(data.path, "OrderedDatastore should have created an entry");
+	})
+
+	it('should get one entry', async () => {
+		let odstore = await uni.getOrderedDatastore("Points");
+		let data = await odstore.getEntry("Johnny");
+		console.log("Singular Entry:", JSON.stringify(data));
+		assert(data.path, "OrderedDatastore should have fetched an entry");
+	})
+
+	it('should delete entries', async () => {
+		let odstore = await uni.getOrderedDatastore("Points");
+		let data = await odstore.deleteEntry("Johnny");
+		console.log("Deleted Entry (n/a):", JSON.stringify(data));
+		assert(data, "OrderedDatastore should have deleted an entry");
+	})
+
+	it('should update entries', async () => {
+		let odstore = await uni.getOrderedDatastore("Points");
+		let data = await odstore.updateEntry("Johnny", 44);
+		console.log("Updated Entry:", JSON.stringify(data));
+		assert(data.path, "OrderedDatastore should have updated an entry");
+	})
+
+	it('should increment entries', async () => {
+		let odstore = await uni.getOrderedDatastore("Points");
+		let data = await odstore.incrementEntry("Johnny", 23);
+		console.log("Incremented Entry:", JSON.stringify(data));
+		assert(data.path, "OrderedDatastore should have incremented an entry");
+	})
+
+})
+
 // let res = await axios.get('https://apis.roblox.com/datastores/v1/1873399482/standard-datastores?scope=global', {
 		// 	headers: {
 		// 		'x-api-key': process.env.RBXTKN

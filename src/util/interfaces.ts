@@ -1,3 +1,5 @@
+import type FormData from 'form-data'
+
 interface Birthdate {
 	birthMonth: number,
 	birthDay: number,
@@ -23,10 +25,17 @@ interface LimitOptions {
 }
 
 interface OctokitMiscellaneousParams {
-	method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
-	headers: any,
 	body?: any,
-	callback?: Function
+	callback?: Function,
+	formData?: FormData,
+	headers: any,
+	method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
+}
+
+interface OrderedDataStoreListEntry {
+	id: string,
+	path: string,
+	value: string
 }
 
 interface TradeOffer {
@@ -41,5 +50,6 @@ export {
 	EntryVersion,
 	LimitOptions,
 	OctokitMiscellaneousParams,
+	OrderedDataStoreListEntry,
 	TradeOffer
 }

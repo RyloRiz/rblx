@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 
 import DataStore from './datastore'
+import OrderedDataStore from './ordereddatastore';
 import * as Util from '../util'
 
 async function modifyPlace(apikey: string, uid: number, pid: number, versionType: 'Saved'|'Published', pathToFile: string) {
@@ -91,6 +92,12 @@ class Universe {
 		} else {
 			console.error(res.status, res.statusText);
 		}
+	}
+
+	async getOrderedDatastore(name: string, scope: string) {
+		let ds = new OrderedDataStore(this.id, name, scope);
+		ds.authenticate(this.#apikey);
+		return ds;
 	}
 
 	async save(placeId: number, pathToFile: string) {
