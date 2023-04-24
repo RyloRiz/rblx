@@ -55,7 +55,7 @@ function populateQuery(list: any): string {
 	return query;
 }
 
-function err(obj) {
+function err(obj: any) {
 	obj = obj.toJSON();
 	console.error(obj.stack);
 	console.error("Config", obj.config);

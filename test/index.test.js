@@ -5,7 +5,8 @@ const path = require('path');
 const assert = require('assert');
 const crypto = require('crypto');
 
-const { OpenCloudUniverse } = require('../dist');
+const { OpenCloudAssetManager, OpenCloudUniverse } = require('../dist');
+const { AssetType } = require('../dist/util');
 // const axios = require('axios').default;
 
 let uni = new OpenCloudUniverse(
@@ -13,6 +14,9 @@ let uni = new OpenCloudUniverse(
 	// 1873399482
 );
 uni.authenticate(process.env.RBXTKN);
+
+let manager = OpenCloudAssetManager.User(2668631199);
+manager.authenticate(process.env.RBXTKN);
 
 describe('Universes', () => {
 
@@ -146,6 +150,25 @@ describe('OrderedDataStores', () => {
 		let data = await odstore.incrementEntry("Johnny", 23);
 		console.log("Incremented Entry:", JSON.stringify(data));
 		assert(data.path, "OrderedDatastore should have incremented an entry");
+	})
+
+})
+
+describe('Asset', () => {
+
+	it('should upload assets', async () => {
+		let operation = await manager.createAsset(AssetType.Decal, path.join(__dirname, 'decal.png'), "Another New Decal", "This was uploaded through Open Cloud!");
+		let id = operation.operationId;
+		console.log("Operation:", JSON.stringify(operation));
+		let asset = await manager.getOperation(id);
+		console.log("Fetched Asset:", JSON.stringify(asset));
+		assert(asset, "AssetManager should have created an asset");
+	})
+
+	it('should update assets', async () => {
+		let data = await manager.updateAsset(13236665337, path.join(__dirname, 'decal1.png'));
+		console.log("Updated Asset:", data);
+		assert(data, "AssetManager should have updated an asset");
 	})
 
 })
