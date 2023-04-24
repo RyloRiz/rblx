@@ -19,6 +19,25 @@ Create a new file<sup>*</sup> in the root of your project called `.env` with the
 
 ### Open Cloud
 <details>
+<summary>OpenCloudAssetManager {Class}</summary>
+
+### `new OpenCloudAssetManager(id: number)`
+Creates a new OpenCloudUniverse object
+
+### `OpenCloudAssetManager.authenticate(apikey: string)`
+Pass the API key through this function, or use the npm dotenv package and `process.env.RBXTKN` from above
+
+### `OpenCloudAssetManager.createAsset(assetType: Util.AssetType, filePath: string, name: string, desc: string)`
+Create a new asset
+
+### `OpenCloudAssetManager.getOperation(id: string)`
+Get operation data related to an asset uplooad
+
+### `OpenCloudAssetManager.updateAsset(assetId: number, filePath: string)`
+Update an asset (currently locked to only Models on Roblox's end)
+</details>
+
+<details>
 <summary>OpenCloudUniverse {Class}</summary>
 
 ### `new OpenCloudUniverse(id: number)`
